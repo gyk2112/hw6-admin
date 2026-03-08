@@ -1,25 +1,24 @@
 ## File Structure
 
 ```
-hw1-hello-world/
+hw6-admin/
 ├── src/
 │   ├── app/
 │   │   ├── layout.tsx
 │   │   ├── page.tsx
 │   │   ├── globals.css
-│   │   ├── actions.ts
-│   │   ├── CaptionFeed.tsx
-│   │   ├── VoteButtons.tsx
-│   │   ├── UploadImage.tsx
-│   │   ├── SignOutButton.tsx
+│   │   ├── NavSidebar.tsx
 │   │   ├── login/
 │   │   │   └── page.tsx
 │   │   ├── auth/
 │   │   │   └── callback/
 │   │   │       └── route.ts
-│   │   └── api/
-│   │       └── upload-and-caption/
-│   │           └── route.ts
+│   │   ├── captions/
+│   │   │   └── page.tsx
+│   │   ├── images/
+│   │   │   └── page.tsx
+│   │   └── users/
+│   │       └── page.tsx
 │   └── lib/
 │       └── supabase/
 │           ├── client.ts

@@ -26,7 +26,7 @@ export default async function RootLayout({
         ) : (
           <div className="flex min-h-screen">
             <NavSidebar userEmail={user?.email ?? ''} />
-            <main className="flex-1 ml-48 p-8 min-h-screen">
+            <main className="flex-1 ml-52 p-8 min-h-screen">
               {children}
             </main>
           </div>

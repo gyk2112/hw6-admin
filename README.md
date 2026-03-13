@@ -13,11 +13,35 @@ hw6-admin/
 │   │   ├── auth/
 │   │   │   └── callback/
 │   │   │       └── route.ts
+│   │   ├── allowed-signup-domains/
+│   │   │   └── page.tsx
+│   │   ├── caption-examples/
+│   │   │   └── page.tsx
+│   │   ├── caption-requests/
+│   │   │   └── page.tsx
 │   │   ├── captions/
+│   │   │   └── page.tsx
+│   │   ├── humor-flavor-steps/
+│   │   │   └── page.tsx
+│   │   ├── humor-flavors/
+│   │   │   └── page.tsx
+│   │   ├── humor-mix/
 │   │   │   └── page.tsx
 │   │   ├── images/
 │   │   │   └── page.tsx
-│   │   └── users/
+│   │   ├── llm-models/
+│   │   │   └── page.tsx
+│   │   ├── llm-prompt-chains/
+│   │   │   └── page.tsx
+│   │   ├── llm-providers/
+│   │   │   └── page.tsx
+│   │   ├── llm-responses/
+│   │   │   └── page.tsx
+│   │   ├── terms/
+│   │   │   └── page.tsx
+│   │   ├── users/
+│   │   │   └── page.tsx
+│   │   └── whitelisted-emails/
 │   │       └── page.tsx
 │   └── lib/
 │       └── supabase/

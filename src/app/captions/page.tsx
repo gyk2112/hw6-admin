@@ -5,7 +5,7 @@ export const revalidate = 60
 export default async function CaptionsPage() {
   const supabase = await createClient()
 
-  const [{ data: topCaptions }, { data: bottomCaptions }] = await Promise.all([
+  const [{ data: topCaptions }, { data: bottomCaptions }, { data: allLikes }] = await Promise.all([
     supabase
       .from('captions')
       .select('id, content, like_count, profile_id, image_id, profiles(email), images(url)')
@@ -16,7 +16,25 @@ export default async function CaptionsPage() {
       .select('id, content, like_count, profile_id, image_id, profiles(email), images(url)')
       .order('like_count', { ascending: true })
       .limit(5),
+    supabase.from('captions').select('like_count'),
   ])
+
+  const likeCounts = (allLikes ?? []).map((r) => r.like_count ?? 0)
+  const totalCaptions = likeCounts.length
+  const totalLikes = likeCounts.reduce((s, n) => s + n, 0)
+  const avgLikes = totalCaptions > 0 ? totalLikes / totalCaptions : 0
+  const maxLikes = totalCaptions > 0 ? Math.max(...likeCounts) : 0
+  const ratedCount = likeCounts.filter((n) => n > 0).length
+  const unratedCount = totalCaptions - ratedCount
+
+  const ratingStats = [
+    { label: 'Total Captions', value: totalCaptions.toLocaleString() },
+    { label: 'Total Likes', value: totalLikes.toLocaleString() },
+    { label: 'Avg Likes / Caption', value: avgLikes.toFixed(2) },
+    { label: 'Max Likes', value: maxLikes.toLocaleString() },
+    { label: 'Rated', value: ratedCount.toLocaleString() },
+    { label: 'Unrated', value: unratedCount.toLocaleString() },
+  ]
 
   const CaptionCard = ({
     caption,
@@ -53,6 +71,19 @@ export default async function CaptionsPage() {
       <div>
         <div className="text-[10px] text-[#444] tracking-[0.3em] uppercase mb-1">Admin</div>
         <h1 className="text-2xl text-white tracking-tight">Captions</h1>
+      </div>
+
+      {/* Rating stats grid */}
+      <div>
+        <div className="text-[10px] text-[#444] tracking-[0.3em] uppercase mb-3">Rating Statistics</div>
+        <div className="grid grid-cols-3 gap-px bg-[#1a1a1a]">
+          {ratingStats.map(({ label, value }) => (
+            <div key={label} className="bg-[#0a0a0a] p-6">
+              <div className="text-[10px] text-[#555] tracking-[0.2em] uppercase mb-2">{label}</div>
+              <div className="text-3xl text-white tabular-nums">{value}</div>
+            </div>
+          ))}
+        </div>
       </div>
 
       <div className="grid grid-cols-2 gap-8">

@@ -5,34 +5,44 @@ export const revalidate = 60
 export default async function CaptionsPage() {
   const supabase = await createClient()
 
-  const [{ data: topCaptions }, { data: bottomCaptions }, { data: allLikes }] = await Promise.all([
+  const [
+    { data: topCaptions },
+    { data: bottomCaptions },
+    { count: totalCaptions },
+    { count: ratedCount },
+    { data: maxRow },
+    { data: sumRow },
+  ] = await Promise.all([
     supabase
       .from('captions')
-      .select('id, content, like_count, profile_id, image_id, profiles(email), images(url)')
+      .select('id, content, like_count, profile_id, image_id, profiles!profile_id(email), images!image_id(url)')
       .order('like_count', { ascending: false })
       .limit(5),
     supabase
       .from('captions')
-      .select('id, content, like_count, profile_id, image_id, profiles(email), images(url)')
+      .select('id, content, like_count, profile_id, image_id, profiles!profile_id(email), images!image_id(url)')
       .order('like_count', { ascending: true })
       .limit(5),
-    supabase.from('captions').select('like_count'),
+    supabase.from('captions').select('*', { count: 'exact', head: true }),
+    supabase.from('captions').select('*', { count: 'exact', head: true }).gt('like_count', 0),
+    supabase.from('captions').select('like_count').order('like_count', { ascending: false }).limit(1).single(),
+    supabase.from('captions').select('like_count.sum()'),
   ])
 
-  const likeCounts = (allLikes ?? []).map((r) => r.like_count ?? 0)
-  const totalCaptions = likeCounts.length
-  const totalLikes = likeCounts.reduce((s, n) => s + n, 0)
-  const avgLikes = totalCaptions > 0 ? totalLikes / totalCaptions : 0
-  const maxLikes = totalCaptions > 0 ? Math.max(...likeCounts) : 0
-  const ratedCount = likeCounts.filter((n) => n > 0).length
-  const unratedCount = totalCaptions - ratedCount
+  const total = totalCaptions ?? 0
+  const rated = ratedCount ?? 0
+
+  const unratedCount = total - rated
+  const maxLikes = (maxRow as any)?.like_count ?? 0
+  const totalLikes = (sumRow?.[0] as any)?.like_count ?? 0
+  const avgLikes = total > 0 ? totalLikes / total : 0
 
   const ratingStats = [
-    { label: 'Total Captions', value: totalCaptions.toLocaleString() },
+    { label: 'Total Captions', value: total.toLocaleString() },
     { label: 'Total Likes', value: totalLikes.toLocaleString() },
     { label: 'Avg Likes / Caption', value: avgLikes.toFixed(2) },
     { label: 'Max Likes', value: maxLikes.toLocaleString() },
-    { label: 'Rated', value: ratedCount.toLocaleString() },
+    { label: 'Rated', value: rated.toLocaleString() },
     { label: 'Unrated', value: unratedCount.toLocaleString() },
   ]
 

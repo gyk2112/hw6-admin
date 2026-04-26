@@ -21,7 +21,7 @@ export default async function DashboardPage() {
     supabase.from('images').select('*', { count: 'exact', head: true }).is('additional_context', null),
     supabase
       .from('captions')
-      .select('profile_id, profiles(email)')
+      .select('profile_id, profiles!profile_id(email)')
       .limit(500),
     supabase
       .from('images')

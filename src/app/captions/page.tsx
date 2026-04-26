@@ -10,8 +10,6 @@ export default async function CaptionsPage() {
     { data: bottomCaptions },
     { count: totalCaptions },
     { count: ratedCount },
-    { data: maxRow },
-    { data: sumRow },
   ] = await Promise.all([
     supabase
       .from('captions')
@@ -25,23 +23,14 @@ export default async function CaptionsPage() {
       .limit(5),
     supabase.from('captions').select('*', { count: 'exact', head: true }),
     supabase.from('captions').select('*', { count: 'exact', head: true }).gt('like_count', 0),
-    supabase.from('captions').select('like_count').order('like_count', { ascending: false }).limit(1).single(),
-    supabase.from('captions').select('like_count.sum()'),
   ])
 
   const total = totalCaptions ?? 0
   const rated = ratedCount ?? 0
-
   const unratedCount = total - rated
-  const maxLikes = (maxRow as any)?.like_count ?? 0
-  const totalLikes = (sumRow?.[0] as any)?.sum ?? 0
-  const avgLikes = total > 0 ? totalLikes / total : 0
 
   const ratingStats = [
     { label: 'Total Captions', value: total.toLocaleString() },
-    { label: 'Total Likes', value: totalLikes.toLocaleString() },
-    { label: 'Avg Likes / Caption', value: avgLikes.toFixed(2) },
-    { label: 'Max Likes', value: maxLikes.toLocaleString() },
     { label: 'Rated', value: rated.toLocaleString() },
     { label: 'Unrated', value: unratedCount.toLocaleString() },
   ]

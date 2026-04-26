@@ -34,7 +34,7 @@ export default async function CaptionsPage() {
 
   const unratedCount = total - rated
   const maxLikes = (maxRow as any)?.like_count ?? 0
-  const totalLikes = (sumRow?.[0] as any)?.like_count ?? 0
+  const totalLikes = (sumRow?.[0] as any)?.sum ?? 0
   const avgLikes = total > 0 ? totalLikes / total : 0
 
   const ratingStats = [
